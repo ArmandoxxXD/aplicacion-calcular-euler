@@ -1,0 +1,97 @@
+
+  
+
+  <div class="container-fluid">
+    <!-- Título del componente -->
+    <div class="row mb-5">
+      <div class="col text-center">
+        <h2>Calculadora de Euler/Euler Mejorado</h2>
+      </div>
+    </div>
+  
+    <!-- Contenido principal -->
+    <div class="row">
+      <!-- Gráfica -->
+      <div class="col-lg-5">
+        <p-chart type="line" [data]="data" [options]="options"></p-chart>
+      </div>
+  
+      <!-- Botones y Tabla -->
+      <div class="col-lg-7">
+        <!-- Botones -->
+        <div class="mb-3">
+          <p-button label="Registrar" class="p-button-success ml-0 mr-10" (click)="showDialog('top')"></p-button>
+          <p-button label="Editar" class="p-button-secondary mr-10" [disabled]="true"></p-button>
+          <p-button label="Eliminar" class="p-button-danger" [disabled]="true"></p-button>
+        </div>
+  
+        <!-- Tarjeta para la tabla -->
+        <div class="card">
+            <p-table
+            [value]="customers"
+            [paginator]="true"
+            [rows]="5"
+            [showCurrentPageReport]="true"
+            [tableStyle]="{ 'min-width': '50rem' }"
+            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+            (onPage)="pageChange($event)"
+            [rowsPerPageOptions]="[10, 25, 50]"
+        >
+            <ng-template pTemplate="header">
+                <tr>
+                    <th style="width:12.5%">Pasos</th>
+                    <th style="width:12.5%">xn</th>
+                    <th style="width:12.5%">yn</th>
+                    <th style="width:12.5%">f(xn/yn)</th>
+                    <th style="width:12.5%">Valor Real</th>
+                    <th style="width:12.5%">Error Real</th>
+                    <th style="width:15%">Error Relativo</th>
+                    <th style="width:10%">h</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-customer>
+                <tr>
+                    <!-- <td>{{ customer.name }}</td>
+                    <td>{{ customer.country.name }}</td>
+                    <td>{{ customer.company }}</td>
+                    <td>{{ customer.representative.name }}</td> -->
+                </tr>
+            </ng-template>
+        </p-table>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+
+  <p-dialog header="Crear Registro" [(visible)]="displayModal" [modal]="true" [draggable]="false" [resizable]="false" [style]="{width: '50vw'}">
+    <!-- Contenido del formulario -->
+    <form>
+      <div class="p-fluid">
+        <div class="p-field">
+          <input pInputText id="edo" [(ngModel)]="edo" name="edo" placeholder="Ingrese el resultado de EDO" />
+        </div>
+        <div class="p-field">
+          <input pInputText type="number" id="numPasos" [(ngModel)]="numPasos" name="numPasos" mode="decimal" placeholder="Ingrese el número de pasos" />
+        </div>
+        <div class="p-field">
+          <p-inputMask class="p-inputMask" id="y0" [(ngModel)]="y0" name="y0" mask="Y(9)=9" slotChar="0" placeholder="Y(0)=0" />
+        </div>
+        <div class="p-field">
+          <p-inputMask class="p-inputMask" id="rango" [(ngModel)]="rango" name="rango" mask="9 ≤ x ≤ 9" slotChar="0" placeholder="0 ≤ x ≤ 0" />
+        </div>
+        <div class="p-field">
+          <input pInputText id="funcion" [(ngModel)]="funcion" name="funcion" placeholder="Ingrese la función" />
+        </div>
+        <div class="p-field radiobutton-group">
+          <p-radioButton name="metodo" value="euler" [(ngModel)]="metodo" label="Euler"></p-radioButton>
+          <p-radioButton name="metodo" value="eulerMejorado" [(ngModel)]="metodo" label="Euler Mejorado"></p-radioButton>
+        </div>
+      </div>
+      <div class="ui-dialog-footer">
+        <p-button label="Cerrar" icon="pi pi-times" (onClick)="displayModal = false"></p-button>
+        <p-button label="Guardar" icon="pi pi-check" class="p-button-success" (onClick)="crearRegistro()"></p-button>
+      </div>
+    </form>
+  </p-dialog>
+  

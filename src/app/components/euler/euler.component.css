@@ -1,0 +1,74 @@
+/* Estilos adicionales para el centrado del título y el margen de los botones */
+h2 {
+    margin-top: 1rem; /* Ajusta según sea necesario */
+  }
+  
+  .mb-3 {
+    display: flex;
+    justify-content: flex-start; /* Alinea los botones a la izquierda */
+    margin-bottom: 1rem; /* Asegúrate de tener un espacio entre los botones y la tabla */
+  }
+  
+  /* Estilos para los botones, ajusta los márgenes como sea necesario */
+  .p-button {
+    margin-right: 0.5rem; /* Espaciado entre botones */
+  }
+
+  /* Asegúrate de que estos estilos tengan precedencia sobre los estilos de PrimeNG */
+.p-inputtext, .p-inputMask {
+    border-radius: 0;
+    margin-bottom: 1rem;
+    width: 100%;
+    background: transparent !important; /* Quita el fondo para que no haya un rectángulo */
+    box-shadow: none !important;
+  }
+  
+  .p-inputtext::placeholder, .p-inputMask::placeholder {
+    color: #888;
+  }
+  
+  .p-field {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .radiobutton-group .p-radiobutton {
+    margin-right: 1rem;
+  }
+  
+  .p-dialog .p-inputgroup {
+    margin-bottom: 1rem;
+  }
+  
+  /* Puedes necesitar !important para sobrescribir los estilos por defecto de PrimeNG */
+  .p-inputtext:focus{
+    box-shadow: none !important;
+    border-color: #007ad9;
+  }
+  
+  /* Para los botones de radio, podrías necesitar algo de estilo adicional */
+  .radiobutton-group {
+    display: flex;
+    justify-content: flex-start;
+  }
+  
+  .p-button {
+    margin-right: 0.5rem;
+  }
+  
+  /* Estilo para eliminar el borde del footer del diálogo */
+  .p-dialog .ui-dialog-footer {
+    border-top: none;
+  }
+
+  /* Estilos para el footer del diálogo */
+.ui-dialog-footer {
+    display: flex;
+    justify-content: flex-end; /* Alinea los botones a la derecha */
+    border-top: none;
+  }
+  
+  /* Estilos para los botones */
+  .p-dialog .p-button {
+    margin-left: 0.5rem; /* Espaciado entre botones */
+  }
