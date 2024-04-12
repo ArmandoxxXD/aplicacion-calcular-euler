@@ -75,10 +75,10 @@
           <input pInputText type="number" id="numPasos" [(ngModel)]="numPasos" name="numPasos" mode="decimal" placeholder="Ingrese el número de pasos" />
         </div>
         <div class="p-field">
-          <p-inputMask class="p-inputMask" id="y0" [(ngModel)]="y0" name="y0" mask="Y(9)=9" slotChar="0" placeholder="Y(0)=0" />
+          <p-inputMask class="p-inputMask" id="valoresInicialesRaw" [(ngModel)]="valoresInicialesRaw" name="valoresInicialesRaw" mask="Y(9)=9" slotChar="0" placeholder="Y(0)=0" />
         </div>
         <div class="p-field">
-          <p-inputMask class="p-inputMask" id="rango" [(ngModel)]="rango" name="rango" mask="9 ≤ x ≤ 9" slotChar="0" placeholder="0 ≤ x ≤ 0" />
+          <p-inputMask class="p-inputMask" id="rangoRaw" [(ngModel)]="rangoRaw" name="rangoRaw" mask="9 ≤ x ≤ 9" slotChar="0" placeholder="0 ≤ x ≤ 0" />
         </div>
         <div class="p-field">
           <input pInputText id="funcion" [(ngModel)]="funcion" name="funcion" placeholder="Ingrese la función" />

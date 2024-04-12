@@ -8,10 +8,24 @@ import { Component, OnInit } from '@angular/core';
 export class EulerComponent implements OnInit {
   edo: string = '';
   numPasos: any;
-  y0: any;
-  rango: any;
+  valoresInicialesRaw: string = '';
+  rangoRaw: string = '';
   funcion!:string;
   metodo: any;
+  valoresIniciales: { 
+    x: number | null; 
+    y: number | null; 
+  } = {
+    x: null,
+    y: null
+  };
+  rango: {
+    inicio: number | null;
+    final: number | null;
+  } = {
+    inicio: null,
+    final: null
+  };
 
   data: any;
 
@@ -119,8 +133,28 @@ showDialog(position: string) {
   this.displayModal = true;
 }
 
-crearRegistro(){
+actualizarValoresIniciales() {
+  const match = this.valoresInicialesRaw.match(/Y\((\d+)\)=(\d+)/);
+  if (match) {
+    this.valoresIniciales.x = parseInt(match[1]);
+    this.valoresIniciales.y = parseInt(match[2]);
+  }
+}
 
+actualizarRango() {
+  const match = this.rangoRaw.match(/(\d+) ≤ x ≤ (\d+)/);
+  if (match) {
+    this.rango.inicio = parseInt(match[1]);
+    this.rango.final = parseInt(match[2]);
+  }
+}
+
+crearRegistro(){
+  this.actualizarValoresIniciales();
+  this.actualizarRango();
+
+  console.log('Valores Iniciales:', this.valoresIniciales);
+  console.log('Rango:', this.rango);
 }
 
 }
