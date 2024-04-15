@@ -28,7 +28,7 @@
         <!-- Tarjeta para la tabla -->
         <div class="card">
             <p-table
-            [value]="customers"
+            [value]="resultados"
             [paginator]="true"
             [rows]="5"
             [showCurrentPageReport]="true"
@@ -39,7 +39,7 @@
         >
             <ng-template pTemplate="header">
                 <tr>
-                    <th style="width:12.5%">Pasos</th>
+                    <th style="width:12.5%">Paso</th>
                     <th style="width:12.5%">xn</th>
                     <th style="width:12.5%">yn</th>
                     <th style="width:12.5%">f(xn/yn)</th>
@@ -69,7 +69,8 @@
     <form>
       <div class="p-fluid">
         <div class="p-field">
-          <input pInputText id="edo" [(ngModel)]="edo" name="edo" placeholder="Ingrese el resultado de EDO" />
+          <input pInputText type="text" id="edo" [(ngModel)]="edo" (ngModelChange)="updateEdo($event)" name="edo" placeholder="Ingrese el resultado de EDO" />
+          <div id="edo-output"></div>
         </div>
         <div class="p-field">
           <input pInputText type="number" id="numPasos" [(ngModel)]="numPasos" name="numPasos" mode="decimal" placeholder="Ingrese el número de pasos" />
@@ -81,7 +82,8 @@
           <p-inputMask class="p-inputMask" id="rangoRaw" [(ngModel)]="rangoRaw" name="rangoRaw" mask="9 ≤ x ≤ 9" slotChar="0" placeholder="0 ≤ x ≤ 0" />
         </div>
         <div class="p-field">
-          <input pInputText id="funcion" [(ngModel)]="funcion" name="funcion" placeholder="Ingrese la función" />
+          <input pInputText  type="text" id="funcion" [(ngModel)]="funcion" (ngModelChange)="updateFuncion($event)" name="funcion" placeholder="Ingrese la función"/>
+          <div id="funcion-output"></div>
         </div>
         <div class="p-field radiobutton-group">
           <p-radioButton name="metodo" value="euler" [(ngModel)]="metodo" label="Euler"></p-radioButton>

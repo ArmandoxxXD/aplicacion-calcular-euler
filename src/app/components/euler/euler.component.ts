@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { euler } from 'src/app/interfaces/euler';
+import { eulerMejorado } from 'src/app/interfaces/eulerMejorado';
+import { MathJaxService } from 'src/app/services/math-jax-service.service';
 
 @Component({
   selector: 'app-euler',
@@ -7,11 +10,11 @@ import { Component, OnInit } from '@angular/core';
 })
 export class EulerComponent implements OnInit {
   edo: string = '';
-  numPasos: any;
+  numPasos!: number;
   valoresInicialesRaw: string = '';
   rangoRaw: string = '';
-  funcion!:string;
-  metodo: any;
+  funcion:string = '';
+  metodo: string="euler";
   valoresIniciales: { 
     x: number | null; 
     y: number | null; 
@@ -32,7 +35,7 @@ export class EulerComponent implements OnInit {
   options: any;
 
 
-  customers!: any[];
+  resultados!: euler[] |  eulerMejorado[];
 
   first = 0;
 
@@ -41,6 +44,8 @@ export class EulerComponent implements OnInit {
   displayModal: boolean = false;
   position: string = 'center';
 
+  constructor(private mathJaxService: MathJaxService){
+  }
 
   ngOnInit() {
     const documentStyle = getComputedStyle(document.documentElement);
@@ -52,14 +57,14 @@ export class EulerComponent implements OnInit {
         labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
         datasets: [
             {
-                label: 'First Dataset',
+                label: 'Euler',
                 data: [65, 59, 80, 81, 56, 55, 40],
                 fill: false,
                 borderColor: documentStyle.getPropertyValue('--blue-500'),
                 tension: 0.4
             },
             {
-                label: 'Second Dataset',
+                label: 'Valor Real',
                 data: [28, 48, 40, 19, 86, 27, 90],
                 fill: false,
                 borderColor: documentStyle.getPropertyValue('--pink-500'),
@@ -121,16 +126,18 @@ pageChange(event: any) {
 }
 
 isLastPage(): boolean {
-  return this.customers ? this.first === this.customers.length - this.rows : true;
+  return this.resultados ? this.first === this.resultados.length - this.rows : true;
 }
 
 isFirstPage(): boolean {
-  return this.customers ? this.first === 0 : true;
+  return this.resultados ? this.first === 0 : true;
 }
 
 showDialog(position: string) {
   this.position = position;
   this.displayModal = true;
+  this.mathJaxService.renderEquation('', 'edo-output');
+  this.mathJaxService.renderEquation('', 'funcion-output');
 }
 
 actualizarValoresIniciales() {
@@ -149,12 +156,19 @@ actualizarRango() {
   }
 }
 
-crearRegistro(){
-  this.actualizarValoresIniciales();
-  this.actualizarRango();
 
-  console.log('Valores Iniciales:', this.valoresIniciales);
-  console.log('Rango:', this.rango);
+updateEdo(newEdo: string) {
+  this.edo = newEdo;
+  this.mathJaxService.renderEquation(this.edo, 'edo-output');
+  console.log(this.edo);
 }
+updateFuncion(newFuncion: string) {
+  this.funcion = newFuncion;
+  this.mathJaxService.renderEquation(this.funcion, 'funcion-output');
+  console.log(this.funcion);
+}
+
+
+crearRegistro() {}
 
 }
