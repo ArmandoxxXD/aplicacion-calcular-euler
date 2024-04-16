@@ -1,7 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { euler } from 'src/app/interfaces/euler';
-import { eulerMejorado } from 'src/app/interfaces/eulerMejorado';
 import { MathJaxService } from 'src/app/services/math-jax-service.service';
+import { EulerServiceService } from 'src/app/services/euler-service.service';
+import { ToastrService } from 'ngx-toastr';
+import { Chart } from 'chart.js';
+import 'chartjs-plugin-zoom';
 
 @Component({
   selector: 'app-euler',
@@ -9,11 +12,12 @@ import { MathJaxService } from 'src/app/services/math-jax-service.service';
   styleUrls: ['./euler.component.css']
 })
 export class EulerComponent implements OnInit {
-  edo: string = '';
+  resultadoFuncion: string = '';
   numPasos!: number;
   valoresInicialesRaw: string = '';
   rangoRaw: string = '';
   funcion:string = '';
+  parsedFunction: any;
   metodo: string="euler";
   valoresIniciales: { 
     x: number | null; 
@@ -31,21 +35,22 @@ export class EulerComponent implements OnInit {
   };
 
   data: any;
-
   options: any;
 
 
-  resultados!: euler[] |  eulerMejorado[];
+  resultados: euler[] = [];
 
   first = 0;
-
-  rows = 10;
+  rows = 0;
 
   displayModal: boolean = false;
   position: string = 'center';
 
-  constructor(private mathJaxService: MathJaxService){
-  }
+  constructor(
+    private mathJaxService: MathJaxService,
+    private toastr: ToastrService,
+    private eulerService: EulerServiceService
+  ){}
 
   ngOnInit() {
     const documentStyle = getComputedStyle(document.documentElement);
@@ -54,18 +59,18 @@ export class EulerComponent implements OnInit {
     const surfaceBorder = documentStyle.getPropertyValue('--surface-border');
 
     this.data = {
-        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+        labels: ['', '', '', '', '', '', ''],
         datasets: [
             {
                 label: 'Euler',
-                data: [65, 59, 80, 81, 56, 55, 40],
+                data: [0, 0, 0, 0, 0, 0, 0],
                 fill: false,
                 borderColor: documentStyle.getPropertyValue('--blue-500'),
                 tension: 0.4
             },
             {
                 label: 'Valor Real',
-                data: [28, 48, 40, 19, 86, 27, 90],
+                data: [0, 0, 0, 0, 0, 0, 0],
                 fill: false,
                 borderColor: documentStyle.getPropertyValue('--pink-500'),
                 tension: 0.4
@@ -74,56 +79,57 @@ export class EulerComponent implements OnInit {
     };
 
     this.options = {
-        maintainAspectRatio: false,
-        aspectRatio: 0.6,
-        plugins: {
-            legend: {
-                labels: {
-                    color: textColor
-                }
-            }
+      maintainAspectRatio: false,
+      aspectRatio: 0.6,
+      plugins: {
+        legend: {
+          labels: {
+            color: textColor,
+          }
         },
-        scales: {
-            x: {
-                ticks: {
-                    color: textColorSecondary
-                },
-                grid: {
-                    color: surfaceBorder,
-                    drawBorder: false
-                }
+        zoom: {
+          zoom: {
+            wheel: {
+              enabled: true, // Habilitar zoom con rueda del mouse
             },
-            y: {
-                ticks: {
-                    color: textColorSecondary
-                },
-                grid: {
-                    color: surfaceBorder,
-                    drawBorder: false
-                }
-            }
+            pinch: {
+              enabled: true // Habilitar zoom con gestos de pellizco
+            },
+            mode: 'xy' // Zoom en los ejes x e y
+          },
+          pan: {
+            enabled: true,
+            mode: 'xy' // Desplazamiento en los ejes x e y
+          }
         }
+      },
+      scales: {
+        x: {
+          ticks: {
+            color: textColorSecondary
+          },
+          grid: {
+            color: surfaceBorder,
+            drawBorder: false
+          }
+        },
+        y: {
+          ticks: {
+            color: textColorSecondary
+          },
+          grid: {
+            color: surfaceBorder,
+            drawBorder: false
+          }
+        }
+      }
     };
 
-    // this.customerService.getCustomersLarge().then((customers) => (this.customers = customers));
-}
+  }
 
 
 validarCampos(): boolean {
-  return !!this.edo && !!this.numPasos && !!this.valoresInicialesRaw && !!this.rangoRaw && !!this.funcion && !!this.metodo;
-}
-
-
-next() {
-  this.first = this.first + this.rows;
-}
-
-prev() {
-  this.first = this.first - this.rows;
-}
-
-reset() {
-  this.first = 0;
+  return !!this.resultadoFuncion && !!this.numPasos && !!this.valoresInicialesRaw && !!this.rangoRaw && !!this.funcion && !!this.metodo;
 }
 
 pageChange(event: any) {
@@ -155,17 +161,18 @@ actualizarValoresIniciales() {
 }
 
 actualizarRango() {
-  const match = this.rangoRaw.match(/(\d+) ≤ x ≤ (\d+)/);
+  const match = this.rangoRaw.match(/(\d+\.?\d*)\s*≤\s*x\s*≤\s*(\d+\.?\d*)/);
   if (match) {
-    this.rango.inicio = parseInt(match[1]);
-    this.rango.final = parseInt(match[2]);
-  }
+    this.rango.inicio = parseFloat(match[1]);
+    this.rango.final = parseFloat(match[2]);
+    console.log(`Rango actualizado: Inicio = ${this.rango.inicio}, Final = ${this.rango.final}`);
+  } 
 }
 
 updateEdo(newEdo: string) {
-  this.edo = newEdo;
-  this.mathJaxService.renderEquation(this.edo, 'edo-output');
-  console.log(this.edo);
+  this.resultadoFuncion = newEdo;
+  this.mathJaxService.renderEquation(this.resultadoFuncion, 'edo-output');
+  console.log(this.resultadoFuncion);
 }
 updateFuncion(newFuncion: string) {
   this.funcion = newFuncion;
@@ -173,16 +180,53 @@ updateFuncion(newFuncion: string) {
   console.log(this.funcion);
 }
 
+actualizarDatosGrafica(resultados: euler[]) {
+  this.data = {
+    ...this.data,
+    labels: resultados.map(r => r.xn.toString()),
+    datasets: [
+      {
+        ...this.data.datasets[0],
+        data: resultados.map(r => r.yn)
+      },
+      {
+        ...this.data.datasets[1],
+        data: resultados.map(r => r.valorReal)
+      }
+    ]
+  };
+}
 
 crearRegistro() {
-  if(this.metodo === 'euler') {
-    const h = (this.rango.final!-this.rango.inicio!)/this.numPasos
+  this.actualizarRango();
+  this.actualizarValoresIniciales();
+  if (this.metodo === 'euler') {
 
+    const datos = {
+      funcion: this.funcion,
+      solucion_real_func: this.resultadoFuncion,
+      numPasos: this.numPasos,
+      x_inicial: this.valoresIniciales.x,
+      y_inicial: this.valoresIniciales.y,
+      rango_inicial: this.rango.inicio,
+      rango_final: this.rango.final
+    };
+
+    this.eulerService.calcularEuler(datos).subscribe({
+      next: (resultados) => {
+        this.resultados = resultados;
+        this.actualizarDatosGrafica(resultados); 
+        this.displayModal = false;
+      },
+      error: (error) => {
+        console.error('Hubo un error al calcular Euler', error);
+        this.toastr.error('Hubo un error al procesar la expresión: ' , 'Error en el cálculo');
+      }
+    });
 
   } else if (this.metodo === 'eulerMejorado') {
-
+    // Implementa aquí el método de Euler Mejorado
   }
-
 }
 
 }
