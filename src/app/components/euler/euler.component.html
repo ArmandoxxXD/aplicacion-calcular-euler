@@ -92,7 +92,7 @@
       </div>
       <div class="ui-dialog-footer">
         <p-button label="Cerrar" icon="pi pi-times" (onClick)="displayModal = false"></p-button>
-        <p-button label="Guardar" icon="pi pi-check" class="p-button-success" (onClick)="crearRegistro()"></p-button>
+        <p-button label="Guardar" icon="pi pi-check" class="p-button-success" (onClick)="crearRegistro()"  [disabled]="!validarCampos()"></p-button>
       </div>
     </form>
   </p-dialog>
