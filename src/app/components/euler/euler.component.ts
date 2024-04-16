@@ -108,6 +108,12 @@ export class EulerComponent implements OnInit {
     // this.customerService.getCustomersLarge().then((customers) => (this.customers = customers));
 }
 
+
+validarCampos(): boolean {
+  return !!this.edo && !!this.numPasos && !!this.valoresInicialesRaw && !!this.rangoRaw && !!this.funcion && !!this.metodo;
+}
+
+
 next() {
   this.first = this.first + this.rows;
 }
@@ -156,7 +162,6 @@ actualizarRango() {
   }
 }
 
-
 updateEdo(newEdo: string) {
   this.edo = newEdo;
   this.mathJaxService.renderEquation(this.edo, 'edo-output');
@@ -169,6 +174,15 @@ updateFuncion(newFuncion: string) {
 }
 
 
-crearRegistro() {}
+crearRegistro() {
+  if(this.metodo === 'euler') {
+    const h = (this.rango.final!-this.rango.inicio!)/this.numPasos
+
+
+  } else if (this.metodo === 'eulerMejorado') {
+
+  }
+
+}
 
 }

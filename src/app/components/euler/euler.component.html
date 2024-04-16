@@ -73,13 +73,13 @@
           <div id="edo-output"></div>
         </div>
         <div class="p-field">
-          <input pInputText type="number" id="numPasos" [(ngModel)]="numPasos" name="numPasos" mode="decimal" placeholder="Ingrese el número de pasos" />
+          <input pInputText type="number" id="numPasos" [(ngModel)]="numPasos" name="numPasos" mode="decimal" placeholder="Ingrese el número de pasos" min="1" />
         </div>
         <div class="p-field">
           <p-inputMask class="p-inputMask" id="valoresInicialesRaw" [(ngModel)]="valoresInicialesRaw" name="valoresInicialesRaw" mask="Y(9)=9" slotChar="0" placeholder="Y(0)=0" />
         </div>
         <div class="p-field">
-          <p-inputMask class="p-inputMask" id="rangoRaw" [(ngModel)]="rangoRaw" name="rangoRaw" mask="9 ≤ x ≤ 9" slotChar="0" placeholder="0 ≤ x ≤ 0" />
+          <p-inputMask class="p-inputMask" id="rangoRaw" [(ngModel)]="rangoRaw" name="rangoRaw" mask="9.9 ≤ x ≤ 9.9" slotChar="0" placeholder="0 ≤ x ≤ 0" />
         </div>
         <div class="p-field">
           <input pInputText  type="text" id="funcion" [(ngModel)]="funcion" (ngModelChange)="updateFuncion($event)" name="funcion" placeholder="Ingrese la función"/>
