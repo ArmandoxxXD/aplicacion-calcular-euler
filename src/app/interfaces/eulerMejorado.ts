@@ -1,15 +1,15 @@
 export interface eulerMejorado{
-    Paso: number;
+    paso: number;
     xn: number;
     yn: number;
-    funcion: number;
-    deltay: number;
+    fxy: number;
+    deltaY: number;
     xnMas1:number;
     ynMas1: number;
-    funcion2:number
-    diferencia:number; //Cmabiar nombre
-    ValorReal: number;
-    ErrorReal: number;
-    ErrorRelativo: number;
+    fXnYn:number
+    hSFuncion:number;
+    valorReal: number;
+    errorReal: number;
+    errorRelativo: number;
     h: number;
 }
