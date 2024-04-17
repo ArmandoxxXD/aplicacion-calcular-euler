@@ -13,6 +13,14 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
+            "allowedCommonJsDependencies": [
+              "typed-function",
+              "seedrandom",
+              "javascript-natural-sort",
+              "complex.js",
+              "fraction.js",
+              "escape-latex"
+            ],
             "outputPath": "dist/front-end",
             "index": "src/index.html",
             "main": "src/main.ts",
