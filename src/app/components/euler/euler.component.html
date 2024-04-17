@@ -20,9 +20,8 @@
       <div class="col-lg-7">
         <!-- Botones -->
         <div class="mb-3">
-          <p-button label="Registrar" class="p-button-success ml-0 mr-10" (click)="showDialog('top')"></p-button>
-          <p-button label="Editar" class="p-button-secondary mr-10" [disabled]="true"></p-button>
-          <p-button label="Eliminar" class="p-button-danger" [disabled]="true"></p-button>
+          <p-button [label]="!resultados.length ? 'Registrar' : 'Editar'" class="p-button-success ml-0 mr-10" (click)="showDialog('top')"></p-button>
+          <p-button label="Eliminar" class="p-button-danger" (click)="eliminarRegistro()" [disabled]="!resultados.length"></p-button>
         </div>
   
         <!-- Tarjeta para la tabla -->
