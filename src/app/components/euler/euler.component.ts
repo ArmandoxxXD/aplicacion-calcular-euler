@@ -1,11 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { euler } from 'src/app/interfaces/euler';
 import { MathJaxService } from 'src/app/services/math-jax-service.service';
 import { EulerServiceService } from 'src/app/services/euler-service.service';
 import { ToastrService } from 'ngx-toastr';
-import { Chart } from 'chart.js';
-import 'chartjs-plugin-zoom';
+import { Chart, registerables  } from 'chart.js';
+import zoomPlugin from 'chartjs-plugin-zoom';
 import { eulerMejorado } from 'src/app/interfaces/eulerMejorado';
+import { UIChart } from 'primeng/chart';
 
 @Component({
   selector: 'app-euler',
@@ -13,6 +14,8 @@ import { eulerMejorado } from 'src/app/interfaces/eulerMejorado';
   styleUrls: ['./euler.component.css']
 })
 export class EulerComponent implements OnInit {
+  @ViewChild('chart') chart!: UIChart;
+
   resultadoFuncion: string = '';
   numPasos!: number;
   valoresInicialesRaw: string = '';
@@ -38,7 +41,6 @@ export class EulerComponent implements OnInit {
   data: any;
   options: any;
 
-
   resultados: euler[] | eulerMejorado[] = [];
 
   first = 0;
@@ -51,9 +53,12 @@ export class EulerComponent implements OnInit {
     private mathJaxService: MathJaxService,
     private toastr: ToastrService,
     private eulerService: EulerServiceService
-  ) { }
+  ) { 
+
+  }
 
   ngOnInit() {
+    Chart.register(...registerables, zoomPlugin);
     const documentStyle = getComputedStyle(document.documentElement);
     const textColor = documentStyle.getPropertyValue('--text-color');
     const textColorSecondary = documentStyle.getPropertyValue('--text-color-secondary');
@@ -67,14 +72,14 @@ export class EulerComponent implements OnInit {
           data: [0, 0, 0, 0, 0, 0, 0],
           fill: false,
           borderColor: documentStyle.getPropertyValue('--blue-500'),
-          tension: 0.4
+          tension: 0.1
         },
         {
           label: 'Valor Real',
           data: [0, 0, 0, 0, 0, 0, 0],
           fill: false,
           borderColor: documentStyle.getPropertyValue('--pink-500'),
-          tension: 0.4
+          tension: 0.1
         }
       ]
     };
@@ -82,6 +87,10 @@ export class EulerComponent implements OnInit {
     this.options = {
       maintainAspectRatio: false,
       aspectRatio: 0.6,
+      animation: {
+        duration: 900,
+        easing: 'linear'
+      },
       plugins: {
         legend: {
           labels: {
@@ -89,18 +98,24 @@ export class EulerComponent implements OnInit {
           }
         },
         zoom: {
+          limits: {
+            x: {min: 'original', max: 'original', minRange: 1},
+            y: {min: 'original', max: 'original', minRange: 1}
+          },
           zoom: {
             wheel: {
-              enabled: true, // Habilitar zoom con rueda del mouse
+              enabled: false,
+              speed: 0.2,
             },
             pinch: {
-              enabled: true // Habilitar zoom con gestos de pellizco
+              enabled: true ,
+              mode: 'xy'
             },
-            mode: 'xy' // Zoom en los ejes x e y
+            mode: 'xy',
           },
           pan: {
             enabled: true,
-            mode: 'xy' // Desplazamiento en los ejes x e y
+            mode: 'xy'
           }
         }
       },
@@ -111,7 +126,7 @@ export class EulerComponent implements OnInit {
           },
           grid: {
             color: surfaceBorder,
-            drawBorder: false
+            drawBorder: false,
           }
         },
         y: {
@@ -145,6 +160,28 @@ export class EulerComponent implements OnInit {
 
       this.actualizarDatosGrafica(JSON.parse(datos));
       this.displayModal = false;
+    }
+  }
+
+  resetZoom() {
+    if (this.chart && this.chart.chart) {
+      this.chart.chart.resetZoom();
+    }
+  }
+
+  zoomIn() {
+    if (this.chart && this.chart.chart) {
+      requestAnimationFrame(() => {
+        this.chart.chart.zoom(1.1);
+      });
+    }
+  }
+  
+  zoomOut() {
+    if (this.chart && this.chart.chart) {
+      requestAnimationFrame(() => {
+        this.chart.chart.zoom(0.9);
+      });
     }
   }
 
