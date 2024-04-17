@@ -37,30 +37,44 @@
             (onPage)="pageChange($event)"
             [rowsPerPageOptions]="[5, 10, 20]"
         >
-            <ng-template pTemplate="header">
-                <tr>
-                    <th style="width:12.5%">Paso</th>
-                    <th style="width:12.5%">xn</th>
-                    <th style="width:12.5%">yn</th>
-                    <th style="width:12.5%">f(xn/yn)</th>
-                    <th style="width:12.5%">Valor Real</th>
-                    <th style="width:12.5%">Error Real</th>
-                    <th style="width:15%">Error Relativo</th>
-                    <th style="width:10%">h</th>
-                </tr>
-            </ng-template>
-            <ng-template pTemplate="body" let-res>
-              <tr>
-                  <td>{{ res.paso }}</td>
-                  <td>{{ res.xn }}</td>
-                  <td>{{ res.yn }}</td>
-                  <td>{{ res.fxy }}</td>
-                  <td>{{ res.valorReal }}</td>
-                  <td>{{ res.errorReal }}</td>
-                  <td>{{ res.errorRelativo }}</td>
-                  <td>{{ res.h }}</td>
-              </tr>
-          </ng-template>
+        <ng-template pTemplate="header">
+          <tr>
+            <th *ngIf="metodo === 'euler'" colspan="8">Resultados de Euler</th>
+            <th *ngIf="metodo === 'eulerMejorado'" colspan="13">Resultados de Euler Mejorado</th>
+          </tr>
+          <tr>
+            <th style="width:12.5%">Paso</th>
+            <th style="width:12.5%">xn</th>
+            <th style="width:12.5%">yn</th>
+            <th style="width:12.5%">f(xn/yn)</th>
+            <th *ngIf="metodo === 'eulerMejorado'">deltaY</th>
+            <th *ngIf="metodo === 'eulerMejorado'">xn+1</th>
+            <th *ngIf="metodo === 'eulerMejorado'">yn+1</th>
+            <th *ngIf="metodo === 'eulerMejorado'">f(xn+1/yn+1)</th>
+            <th *ngIf="metodo === 'eulerMejorado'">h*f(xn/yn)</th>
+            <th style="width:12.5%">Valor Real</th>
+            <th style="width:12.5%">Error Real</th>
+            <th style="width:15%">Error Relativo</th>
+            <th style="width:10%">h</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-res>
+          <tr>
+            <td>{{ res.paso }}</td>
+            <td>{{ res.xn }}</td>
+            <td>{{ res.yn }}</td>
+            <td>{{ res.fxy }}</td>
+            <td *ngIf="metodo === 'eulerMejorado'">{{ res.deltaY }}</td>
+            <td *ngIf="metodo === 'eulerMejorado'">{{ res.xnMas1 }}</td>
+            <td *ngIf="metodo === 'eulerMejorado'">{{ res.ynMas1 }}</td>
+            <td *ngIf="metodo === 'eulerMejorado'">{{ res.fXnYn }}</td>
+            <td *ngIf="metodo === 'eulerMejorado'">{{ res.hSFuncion }}</td>
+            <td>{{ res.valorReal }}</td>
+            <td>{{ res.errorReal }}</td>
+            <td>{{ res.errorRelativo }}</td>
+            <td>{{ res.h }}</td>
+          </tr>
+        </ng-template>
         </p-table>
         </div>
       </div>

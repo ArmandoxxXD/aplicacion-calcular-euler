@@ -5,6 +5,7 @@ import { EulerServiceService } from 'src/app/services/euler-service.service';
 import { ToastrService } from 'ngx-toastr';
 import { Chart } from 'chart.js';
 import 'chartjs-plugin-zoom';
+import { eulerMejorado } from 'src/app/interfaces/eulerMejorado';
 
 @Component({
   selector: 'app-euler',
@@ -38,7 +39,7 @@ export class EulerComponent implements OnInit {
   options: any;
 
 
-  resultados: euler[] = [];
+  resultados: euler[] | eulerMejorado[] = [];
 
   first = 0;
   rows = 0;
@@ -198,10 +199,9 @@ actualizarDatosGrafica(resultados: euler[]) {
 }
 
 crearRegistro() {
-  this.actualizarRango();
-  this.actualizarValoresIniciales();
-  if (this.metodo === 'euler') {
-
+  console.log(this.metodo)
+    this.actualizarRango();
+    this.actualizarValoresIniciales();
     const datos = {
       funcion: this.funcion,
       solucion_real_func: this.resultadoFuncion,
@@ -211,21 +211,26 @@ crearRegistro() {
       rango_inicial: this.rango.inicio,
       rango_final: this.rango.final
     };
-
-    this.eulerService.calcularEuler(datos).subscribe({
-      next: (resultados) => {
-        this.resultados = resultados;
-        this.actualizarDatosGrafica(resultados); 
-        this.displayModal = false;
-      },
-      error: (error) => {
-        this.toastr.error('Hubo un error al procesar una expresión' , 'Error en el cálculo');
-      }
-    });
-
-  } else if (this.metodo === 'eulerMejorado') {
-    // Implementa aquí el método de Euler Mejorado
-  }
+  
+    if (this.metodo === 'euler') {
+      this.eulerService.calcularEuler(datos).subscribe({
+        next: (resultados: euler[]) => {
+          this.resultados = resultados;
+          this.actualizarDatosGrafica(resultados);
+          this.displayModal = false;
+        },
+        error: (error) => this.toastr.error('Hubo un error al procesar una expresión', 'Error en el cálculo')
+      });
+    } else if (this.metodo === 'eulerMejorado') {
+      this.eulerService.calcularEulerMejorado(datos).subscribe({
+        next: (resultados: eulerMejorado[]) => {
+          this.resultados = resultados;
+          this.actualizarDatosGrafica(resultados);
+          this.displayModal = false;
+        },
+        error: (error) => this.toastr.error('Hubo un error al procesar una expresión', 'Error en el cálculo')
+      });
+    }
 }
 
 }
