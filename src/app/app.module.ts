@@ -16,6 +16,8 @@ import { InputMaskModule } from 'primeng/inputmask';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { ToastrModule } from 'ngx-toastr';
+import { ToolbarModule } from 'primeng/toolbar';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -35,7 +37,8 @@ import { ToastrModule } from 'ngx-toastr';
     InputNumberModule,
     InputMaskModule,
     ToastrModule.forRoot(),
-    HttpClientModule
+    HttpClientModule,
+    ToolbarModule
   ],
   providers: [],
   bootstrap: [AppComponent]
