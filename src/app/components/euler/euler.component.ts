@@ -219,8 +219,7 @@ crearRegistro() {
         this.displayModal = false;
       },
       error: (error) => {
-        console.error('Hubo un error al calcular Euler', error);
-        this.toastr.error('Hubo un error al procesar la expresión: ' , 'Error en el cálculo');
+        this.toastr.error('Hubo un error al procesar una expresión' , 'Error en el cálculo');
       }
     });
 
