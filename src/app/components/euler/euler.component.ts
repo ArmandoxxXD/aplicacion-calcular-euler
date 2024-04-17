@@ -5,6 +5,9 @@ import { EulerServiceService } from 'src/app/services/euler-service.service';
 import { ToastrService } from 'ngx-toastr';
 import { Chart } from 'chart.js';
 import 'chartjs-plugin-zoom';
+import { ChartModule } from 'primeng/chart';
+import 'chartjs-plugin-zoom';
+
 
 @Component({
   selector: 'app-euler',
@@ -77,36 +80,15 @@ export class EulerComponent implements OnInit {
             }
         ]
     };
-
     this.options = {
-      maintainAspectRatio: false,
-      aspectRatio: 0.6,
-      plugins: {
-        legend: {
-          labels: {
-            color: textColor,
-          }
-        },
-        zoom: {
-          zoom: {
-            wheel: {
-              enabled: true, // Habilitar zoom con rueda del mouse
-            },
-            pinch: {
-              enabled: true // Habilitar zoom con gestos de pellizco
-            },
-            mode: 'xy' // Zoom en los ejes x e y
-          },
-          pan: {
-            enabled: true,
-            mode: 'xy' // Desplazamiento en los ejes x e y
-          }
-        }
-      },
+      maintainAspectRatio: false, // Esto permite ajustar el tamaño de la gráfica sin mantener una relación de aspecto fija
+      aspectRatio: 0.3, // Puedes ajustar este valor para cambiar la relación de aspecto de la gráfica
+      // Otras configuraciones...
       scales: {
         x: {
           ticks: {
-            color: textColorSecondary
+            color: textColorSecondary,
+            maxTicksLimit: 100 // Ajusta el número máximo de ticks en el eje x para que estén más cerca entre sí
           },
           grid: {
             color: surfaceBorder,
@@ -115,7 +97,8 @@ export class EulerComponent implements OnInit {
         },
         y: {
           ticks: {
-            color: textColorSecondary
+            color: textColorSecondary,
+            maxTicksLimit: 50 // Ajusta el número máximo de ticks en el eje y para que estén más cerca entre sí
           },
           grid: {
             color: surfaceBorder,
@@ -124,8 +107,8 @@ export class EulerComponent implements OnInit {
         }
       }
     };
-
   }
+  
 
 
 validarCampos(): boolean {
