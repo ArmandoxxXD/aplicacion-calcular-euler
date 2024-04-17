@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException, Response
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import numpy as np
@@ -84,13 +84,13 @@ async def calculate_euler(input: EulerInput):
 
         resultados.append(EulerOutput(
             paso=i,
-            xn=float(xs[i]),
-            yn=float(ys[i]),
-            fxy=float(f(xs[i], ys[i])),
-            valorReal=float(valor_real),
-            errorReal=float(error_real),
-            errorRelativo=float(error_relativo),
-            h=h
+            xn=round(float(xs[i]),5),
+            yn=round(float(ys[i]),5),
+            fxy=round(float(f(xs[i], ys[i])),5),
+            valorReal=round(float(valor_real),5),
+            errorReal=round(float(error_real),5),
+            errorRelativo=round(float(error_relativo),5),
+            h=round(h, 5)
         ))
 
     return resultados

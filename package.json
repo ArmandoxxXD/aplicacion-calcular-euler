@@ -24,6 +24,7 @@
     "hammerjs": "^2.0.8",
     "mathjs": "^12.4.1",
     "ngx-toastr": "^18.0.0",
+    "primeicons": "^7.0.0",
     "primeng": "^16.9.1",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
