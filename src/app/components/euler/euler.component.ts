@@ -255,7 +255,7 @@ crearRegistro() {
         error: (error) => this.toastr.error('Hubo un error al procesar una expresión', 'Error en el cálculo')
       });
     }
-
+  }
 
   eliminarRegistro() {
     this.resultados = new Array<euler>;
