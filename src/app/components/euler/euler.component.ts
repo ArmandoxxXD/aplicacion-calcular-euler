@@ -5,6 +5,7 @@ import { EulerServiceService } from 'src/app/services/euler-service.service';
 import { ToastrService } from 'ngx-toastr';
 import { Chart } from 'chart.js';
 import 'chartjs-plugin-zoom';
+import { eulerMejorado } from 'src/app/interfaces/eulerMejorado';
 
 @Component({
   selector: 'app-euler',
@@ -16,29 +17,29 @@ export class EulerComponent implements OnInit {
   numPasos!: number;
   valoresInicialesRaw: string = '';
   rangoRaw: string = '';
-  funcion:string = '';
+  funcion: string = '';
   parsedFunction: any;
-  metodo: string="euler";
-  valoresIniciales: { 
-    x: number | null; 
-    y: number | null; 
+  metodo: string = "euler";
+  valoresIniciales: {
+    x: number | null;
+    y: number | null;
   } = {
-    x: null,
-    y: null
-  };
+      x: null,
+      y: null
+    };
   rango: {
     inicio: number | null;
     final: number | null;
   } = {
-    inicio: null,
-    final: null
-  };
+      inicio: null,
+      final: null
+    };
 
   data: any;
   options: any;
 
 
-  resultados: euler[] = [];
+  resultados: euler[] | eulerMejorado[] = [];
 
   first = 0;
   rows = 0;
@@ -50,7 +51,7 @@ export class EulerComponent implements OnInit {
     private mathJaxService: MathJaxService,
     private toastr: ToastrService,
     private eulerService: EulerServiceService
-  ){}
+  ) { }
 
   ngOnInit() {
     const documentStyle = getComputedStyle(document.documentElement);
@@ -59,23 +60,23 @@ export class EulerComponent implements OnInit {
     const surfaceBorder = documentStyle.getPropertyValue('--surface-border');
 
     this.data = {
-        labels: ['', '', '', '', '', '', ''],
-        datasets: [
-            {
-                label: 'Euler',
-                data: [0, 0, 0, 0, 0, 0, 0],
-                fill: false,
-                borderColor: documentStyle.getPropertyValue('--blue-500'),
-                tension: 0.4
-            },
-            {
-                label: 'Valor Real',
-                data: [0, 0, 0, 0, 0, 0, 0],
-                fill: false,
-                borderColor: documentStyle.getPropertyValue('--pink-500'),
-                tension: 0.4
-            }
-        ]
+      labels: ['', '', '', '', '', '', ''],
+      datasets: [
+        {
+          label: 'Euler',
+          data: [0, 0, 0, 0, 0, 0, 0],
+          fill: false,
+          borderColor: documentStyle.getPropertyValue('--blue-500'),
+          tension: 0.4
+        },
+        {
+          label: 'Valor Real',
+          data: [0, 0, 0, 0, 0, 0, 0],
+          fill: false,
+          borderColor: documentStyle.getPropertyValue('--pink-500'),
+          tension: 0.4
+        }
+      ]
     };
 
     this.options = {
@@ -124,40 +125,60 @@ export class EulerComponent implements OnInit {
         }
       }
     };
+    if (localStorage.getItem('euler')) {
+      const datos = localStorage.getItem('euler') as string;
+      const prom = JSON.parse(localStorage.getItem('euler-prom') as string);
+      this.resultados = JSON.parse(datos);
 
+      this.funcion = prom.funcion;
+      this.resultadoFuncion = prom.solucion_real_func;
+      this.numPasos = prom.numPasos;
+      this.valoresIniciales.x = prom.x_inicial;
+      this.valoresIniciales.y = prom.y_inicial;
+
+      this.valoresInicialesRaw = `Y(${prom.x_inicial}=${prom.y_inicial})`;
+      this.rango.inicio = prom.rango_inicial;
+      this.rango.final = prom.rango_final;
+
+      this.rangoRaw = `${prom.rango_inicial % 1 !== 0 ? `${prom.rango_inicial}` : `${prom.rango_inicial}.0`} ≤ x ≤ ${prom.rango_final % 1 !== 0 ? `${prom.rango_final}` : `${prom.rango_final}.0`}`
+      console.log(this.rangoRaw);
+
+      this.actualizarDatosGrafica(JSON.parse(datos));
+      this.displayModal = false;
+    }
   }
 
 
-validarCampos(): boolean {
-  return !!this.resultadoFuncion && !!this.numPasos && !!this.valoresInicialesRaw && !!this.rangoRaw && !!this.funcion && !!this.metodo;
-}
-
-pageChange(event: any) {
-  this.first = event.first;
-  this.rows = event.rows;
-}
-
-isLastPage(): boolean {
-  return this.resultados ? this.first === this.resultados.length - this.rows : true;
-}
-
-isFirstPage(): boolean {
-  return this.resultados ? this.first === 0 : true;
-}
-
-showDialog(position: string) {
-  this.position = position;
-  this.displayModal = true;
-  this.mathJaxService.renderEquation('', 'edo-output');
-  this.mathJaxService.renderEquation('', 'funcion-output');
-}
-
-actualizarValoresIniciales() {
-  const match = this.valoresInicialesRaw.match(/Y\((\d+)\)=(\d+)/);
-  if (match) {
-    this.valoresIniciales.x = parseInt(match[1]);
-    this.valoresIniciales.y = parseInt(match[2]);
+  validarCampos(): boolean {
+    return !!this.resultadoFuncion && !!this.numPasos && !!this.valoresInicialesRaw && !!this.rangoRaw && !!this.funcion && !!this.metodo;
   }
+
+  pageChange(event: any) {
+    this.first = event.first;
+    this.rows = event.rows;
+  }
+
+  isLastPage(): boolean {
+    return this.resultados ? this.first === this.resultados.length - this.rows : true;
+  }
+
+  isFirstPage(): boolean {
+    return this.resultados ? this.first === 0 : true;
+  }
+
+  showDialog(position: string) {
+    this.position = position;
+    this.displayModal = true;
+    this.mathJaxService.renderEquation('', 'edo-output');
+    this.mathJaxService.renderEquation('', 'funcion-output');
+  }
+
+  actualizarValoresIniciales() {
+    const match = this.valoresInicialesRaw.match(/Y\((\d+)\)=(\d+)/);
+    if (match) {
+      this.valoresIniciales.x = parseInt(match[1]);
+      this.valoresIniciales.y = parseInt(match[2]);
+    }
 }
 
 actualizarRango() {
@@ -198,10 +219,9 @@ actualizarDatosGrafica(resultados: euler[]) {
 }
 
 crearRegistro() {
-  this.actualizarRango();
-  this.actualizarValoresIniciales();
-  if (this.metodo === 'euler') {
-
+  console.log(this.metodo)
+    this.actualizarRango();
+    this.actualizarValoresIniciales();
     const datos = {
       funcion: this.funcion,
       solucion_real_func: this.resultadoFuncion,
@@ -211,22 +231,35 @@ crearRegistro() {
       rango_inicial: this.rango.inicio,
       rango_final: this.rango.final
     };
-
-    this.eulerService.calcularEuler(datos).subscribe({
-      next: (resultados) => {
-        this.resultados = resultados;
-        this.actualizarDatosGrafica(resultados); 
-        this.displayModal = false;
-      },
-      error: (error) => {
-        console.error('Hubo un error al calcular Euler', error);
-        this.toastr.error('Hubo un error al procesar la expresión: ' , 'Error en el cálculo');
-      }
-    });
-
-  } else if (this.metodo === 'eulerMejorado') {
-    // Implementa aquí el método de Euler Mejorado
+  
+    if (this.metodo === 'euler') {
+      this.eulerService.calcularEuler(datos).subscribe({
+        next: (resultados: euler[]) => {
+          this.resultados = resultados;
+          this.actualizarDatosGrafica(resultados);
+          localStorage.setItem('euler', JSON.stringify(resultados, null, 2));
+          localStorage.setItem('euler-prom', JSON.stringify(datos, null, 2))
+          this.displayModal = false;
+        },
+        error: (error) => this.toastr.error('Hubo un error al procesar una expresión', 'Error en el cálculo')
+      });
+    } else if (this.metodo === 'eulerMejorado') {
+      this.eulerService.calcularEulerMejorado(datos).subscribe({
+        next: (resultados: eulerMejorado[]) => {
+          this.resultados = resultados;
+          this.actualizarDatosGrafica(resultados);
+          localStorage.setItem('euler', JSON.stringify(resultados, null, 2));
+          localStorage.setItem('euler-prom', JSON.stringify(datos, null, 2))
+          this.displayModal = false;
+        },
+        error: (error) => this.toastr.error('Hubo un error al procesar una expresión', 'Error en el cálculo')
+      });
+    }
   }
-}
 
+  eliminarRegistro() {
+    this.resultados = new Array<euler>;
+    this.actualizarDatosGrafica([]);
+    localStorage.clear();
+  }
 }

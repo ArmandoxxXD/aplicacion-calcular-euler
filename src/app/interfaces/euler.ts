@@ -2,7 +2,7 @@ export interface euler{
     paso: Number;
     xn: Number;
     yn: Number;
-    fxy: number; // f(xn, yn)
+    fxy: number;
     valorReal: number;
     errorReal: number;
     errorRelativo: number;
