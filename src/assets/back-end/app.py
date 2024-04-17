@@ -118,18 +118,21 @@ async def calculate_euler_mejorado(input: EulerInput):
         fxy = f(xs[i], ys[i])
         deltaY = h * fxy
         
-        if i < input.numPasos:
-            # Predictor
-            yn_mas_1_predictor = ys[i] + deltaY
-            fXnYn = f(xs[i] + h, yn_mas_1_predictor)
-            ynMas1 = ys[i] + h * (fxy + fXnYn) / 2
-            xs[i+1] = xs[i] + h
-            ys[i+1] = ynMas1
-        else:
-            ynMas1 = ys[i]
+        # Usar Euler estándar para calcular ynMas1
+        ynMas1 = ys[i] + deltaY
 
+        # Si se necesita calcular fXnYn para otros cálculos, usamos ynMas1
+        if i < input.numPasos:
+            fXnYn = f(xs[i] + h, ynMas1)
+            xs[i + 1] = xs[i] + h
+            # Actualizar ys[i+1] con la corrección de Euler Mejorado si se desea
+            ys[i + 1] = ys[i] + h * (fxy + fXnYn) / 2
+        else:
+            fXnYn = 0  # Para el último paso, no hay un siguiente valor para calcular
         valor_real = real_func(xs[i])
+        # El error absoluto se calcula como la diferencia entre el valor real y yn, no ynMas1
         error_absoluto = abs(valor_real - ys[i])
+        # El error relativo es el error absoluto dividido por el valor real, multiplicado por 100
         error_relativo = (error_absoluto / abs(valor_real)) * 100 if valor_real != 0 else float('inf')
 
         resultados.append(EulerMejoradoOutput(
@@ -141,10 +144,10 @@ async def calculate_euler_mejorado(input: EulerInput):
             xnMas1=round(float(xs[i] + h), 5),
             ynMas1=round(float(ynMas1), 5),
             fXnYn=round(float(fXnYn), 5),
-            hSFuncion=round(float(h * (fxy + fXnYn) / 2), 5),
-            valorReal=round(valor_real,5),
-            errorReal=round(error_absoluto,5),
-            errorRelativo=round(error_relativo,5),
+            hSFuncion=round(float(h * (fxy + fXnYn) / 2) if i < input.numPasos else 0, 5),
+            valorReal=round(valor_real, 5),
+            errorReal=round(error_absoluto, 5),
+            errorRelativo=round(error_relativo, 5),
             h=round(h, 5)
         ))
 
